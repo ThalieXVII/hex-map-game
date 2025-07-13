@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Carte Ville</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      background-image: url("assets/city.png");
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🗺️ Menu de navigation entre cartes -->
+  <select onchange="location.href=this.value">
+    <option value="index.html">Carte principale</option>
+    <option value="forest.html">Forêt</option>
+    <option value="ville.html">Ville</option>
+  </select>
+
+  <!-- 🎭 Menu de sélection de personnage -->
+  <select id="characterSelect">
+    <option value="assets/Zartan copie.png">Zartan</option>
+    <option value="assets/Zarana.png">Zarana</option>
+    <option value="assets/Zandar.png">Zandar</option>
+    <option value="assets/RoadPig.png">Road Pig</option>
+    <option value="assets/Trasher.png">Trasher</option>
+    <option value="assets/Zanya.png">Zanya</option>
+    <option value="assets/zanzibar2 copie.png">Zanzibar</option>
+  </select>
+
+  <!-- 🎮 Zone de jeu -->
+  <canvas id="hexCanvas"></canvas>
+  <img id="character" src="assets/Zartan copie.png" draggable="true">
+  <script src="script.js"></script>
+
+</body>
+</html>
