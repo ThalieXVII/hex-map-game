@@ -10,7 +10,7 @@ const totalRows = 200;
 let offsetX = 0;
 let offsetY = 0;
 
-// 🧩 Dessiner un hexagone
+// 🔷 Dessiner un hexagone avec son étiquette
 function drawHex(x, y, label) {
   ctx.beginPath();
   for (let i = 0; i < 6; i++) {
@@ -23,21 +23,21 @@ function drawHex(x, y, label) {
   ctx.strokeStyle = "#ccc";
   ctx.stroke();
 
-  // 🔤 Ajouter la coordonnée (ex: A-1)
+  // 🔤 Texte discret en bas de chaque case
+  ctx.font = "8px sans-serif";
   ctx.fillStyle = "#999";
-  ctx.font = "10px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText(label, x, y + 4);
+  ctx.fillText(label, x, y + hexSize / 2);
 }
 
-// 📦 Conversion coordonnées grille → pixel
+// 🔁 Conversion grille → position pixel
 function gridToPixel(col, row) {
   const x = hexSize * 1.5 * col - offsetX;
   const y = hexSize * Math.sqrt(3) * (row + 0.5 * (col % 2)) - offsetY;
   return { x, y };
 }
 
-// 🎮 Afficher toute la carte visible
+// 🗺️ Dessine toute la portion visible de la carte
 function drawMap() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let col = 0; col < totalCols; col++) {
@@ -45,7 +45,7 @@ function drawMap() {
       const { x, y } = gridToPixel(col, row);
       if (x > -hexSize && x < canvas.width + hexSize &&
           y > -hexSize && y < canvas.height + hexSize) {
-        const colLetter = String.fromCharCode(65 + col); // 65 = A
+        const colLetter = String.fromCharCode(65 + (col % 26)); // A-Z cyclique
         const label = `${colLetter}-${row + 1}`;
         drawHex(x, y, label);
       }
@@ -55,7 +55,7 @@ function drawMap() {
 
 drawMap();
 
-// 🕹️ Déplacement avec flèches
+// 🕹️ Flèches du clavier pour se déplacer dans la carte
 window.addEventListener("keydown", (e) => {
   const scrollAmount = 80;
   if (e.key === "ArrowUp") offsetY -= scrollAmount;
@@ -63,10 +63,10 @@ window.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") offsetX -= scrollAmount;
   if (e.key === "ArrowRight") offsetX += scrollAmount;
   drawMap();
-  restoreCharacters(); // repositionne les persos
+  restoreCharacters();
 });
 
-// 💾 Sauvegarder les positions
+// 💾 Sauvegarde dans le navigateur (localStorage)
 function saveCharacters() {
   const characters = Array.from(document.querySelectorAll(".character")).map(c => ({
     src: c.src,
@@ -76,7 +76,7 @@ function saveCharacters() {
   localStorage.setItem("characters", JSON.stringify(characters));
 }
 
-// 🔁 Recharger les positions
+// 🔄 Recharge les personnages sauvegardés
 function restoreCharacters() {
   const saved = JSON.parse(localStorage.getItem("characters") || "[]");
   document.querySelectorAll(".character").forEach(c => c.remove());
@@ -98,7 +98,7 @@ function restoreCharacters() {
 
 restoreCharacters();
 
-// 👥 Ajouter les personnages cochés
+// 👥 Ajout de personnages depuis les cases cochées
 document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
   checkbox.addEventListener("change", (e) => {
     const src = e.target.value;
