@@ -22,18 +22,22 @@
     <button onclick="location.href='ville.html'">Ville</button>
   </div>
 
-  <!-- 👥 Choix des personnages -->
+  <!-- 👥 Liste complète des personnages -->
   <div class="persos">
-    <label><input type="checkbox" value="assets/Zartan copie.png"> Zartan</label>
-    <label><input type="checkbox" value="assets/Zarana.png"> Zarana</label>
+    <label><input type="checkbox" value="assets/RoadPig.png"> Road Pig</label>
+    <label><input type="checkbox" value="assets/Trasher.png"> Trasher</label>
     <label><input type="checkbox" value="assets/Zandar.png"> Zandar</label>
+    <label><input type="checkbox" value="assets/Zanya.png"> Zanya</label>
+    <label><input type="checkbox" value="assets/Zarana.png"> Zarana</label>
+    <label><input type="checkbox" value="assets/Zartan.png"> Zartan</label>
+    <label><input type="checkbox" value="assets/zanzibar.png"> Zanzibar</label>
   </div>
 
   <!-- 🛠️ Boutons de gestion -->
   <div style="position:absolute; top:140px; left:10px; z-index:20;">
     <button onclick="saveCharacters()">💾 Sauver la carte</button>
     <button onclick="restoreCharacters()">🔄 Charger la dernière position</button>
-    <button onclick="localStorage.removeItem('characters'); location.reload();">🗑️ Réinitialiser</button>
+    <button onclick="localStorage.removeItem('characters-ville'); location.reload();">🗑️ Réinitialiser</button>
   </div>
 
   <canvas id="hexCanvas"></canvas>
@@ -41,5 +45,6 @@
 
 </body>
 </html>
+
 
 
