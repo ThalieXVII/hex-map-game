@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// 🔷 Paramètres de la carte hexagonale
 const hexSize = 40;
 const cols = 10;
 const rows = 10;
@@ -26,6 +27,7 @@ function gridToPixel(col, row) {
   return { x, y };
 }
 
+// 🧩 Dessine la grille
 for (let col = 0; col < cols; col++) {
   for (let row = 0; row < rows; row++) {
     const { x, y } = gridToPixel(col, row);
@@ -33,12 +35,22 @@ for (let col = 0; col < cols; col++) {
   }
 }
 
-// Drag image logic
+// 🧍‍♀️ Gestion du personnage
 const character = document.getElementById("character");
+character.style.position = "absolute";
 character.style.left = "100px";
 character.style.top = "100px";
 
 character.addEventListener("dragend", (e) => {
   character.style.left = `${e.pageX - 30}px`;
   character.style.top = `${e.pageY - 30}px`;
+});
+
+// 🎮 Menu de sélection du personnage
+const select = document.getElementById("characterSelect");
+
+select.addEventListener("change", () => {
+  character.src = select.value;
+  character.style.left = "100px";
+  character.style.top = "100px";
 });
