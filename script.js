@@ -1,28 +1,34 @@
+// 🖼️ Charger le fond décoratif (city.png)
+const backgroundImage = new Image();
+backgroundImage.src = "assets/city.png";
+
 // 🎮 Initialisation du canvas
 const canvas = document.getElementById("hexCanvas");
 const ctx = canvas.getContext("2d");
+
+// ✅ Adapter la taille du canvas à l'écran
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// 🛠️ Paramètres de la grille
-const hexSize = 40;
+// 🧮 Grille hexagonale
+const hexSize = 32; // plus petit pour voir plus de cases
 const totalCols = 200;
 const totalRows = 200;
 let offsetX = 0;
 let offsetY = 0;
 
-// 📦 Identifiant unique pour chaque carte
+// 📦 Déterminer la carte active (ville, forest, index)
 const pageName = location.pathname.split("/").pop().replace(".html", "");
 const STORAGE_KEY = "characters-" + pageName;
 
-// 🔁 Convertit case hexagonale → position pixel à l'écran
+// 📍 Convertit case hexagonale → position pixel
 function gridToPixel(col, row) {
   const x = hexSize * 1.5 * col - offsetX;
   const y = hexSize * Math.sqrt(3) * (row + 0.5 * (col % 2)) - offsetY;
   return { x, y };
 }
 
-// 🔷 Dessine un hexagone + son label (`B-8`, etc.)
+// 🔷 Dessine un hexagone + son label (B-8, etc.)
 function drawHex(x, y, label) {
   ctx.beginPath();
   for (let i = 0; i < 6; i++) {
@@ -39,9 +45,13 @@ function drawHex(x, y, label) {
   ctx.fillText(label, x, y + hexSize / 2);
 }
 
-// 🗺️ Dessine la carte visible
+// 🗺️ Dessine la carte avec fond + hexagones
 function drawMap() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 🎨 Dessine le fond en décalé
+  ctx.drawImage(backgroundImage, -offsetX, -offsetY, canvas.width + offsetX, canvas.height + offsetY);
+
   for (let col = 0; col < totalCols; col++) {
     for (let row = 0; row < totalRows; row++) {
       const { x, y } = gridToPixel(col, row);
@@ -55,15 +65,13 @@ function drawMap() {
   }
 }
 
-// 🔁 Rafraîchit carte + personnages à bonne position
+// 🔁 Redessine carte + persos à chaque défilement
 function refresh() {
   drawMap();
   restoreCharacters();
 }
 
-refresh();
-
-// ⌨️ Flèches du clavier pour faire défiler la carte
+// ⌨️ Flèches du clavier pour faire défiler
 window.addEventListener("keydown", (e) => {
   const scrollAmount = 80;
   if (e.key === "ArrowUp") offsetY -= scrollAmount;
@@ -73,7 +81,9 @@ window.addEventListener("keydown", (e) => {
   refresh();
 });
 
-// 💾 Sauvegarde des personnages (col, row, src)
+refresh();
+
+// 💾 Sauvegarde des personnages
 function saveCharacters() {
   const characters = Array.from(document.querySelectorAll(".character")).map(c => ({
     src: c.dataset.src,
@@ -83,7 +93,7 @@ function saveCharacters() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
 }
 
-// 🔄 Repositionne les personnages selon leurs coordonnées
+// 🔄 Repositionne tous les personnages selon leur col/row
 function restoreCharacters() {
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   document.querySelectorAll(".character").forEach(c => c.remove());
@@ -117,7 +127,7 @@ function restoreCharacters() {
   });
 }
 
-// 👥 Ajoute un personnage quand on le coche
+// 🧍‍♂️ Ajoute le personnage quand on coche
 document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
   checkbox.addEventListener("change", (e) => {
     const src = e.target.value;
@@ -157,3 +167,4 @@ document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
     }
   });
 });
+
