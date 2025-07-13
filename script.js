@@ -1,34 +1,31 @@
-// 🖼️ Chargement du fond "new york city.png" (spécifique à la carte ville)
+// 🖼️ Fond dynamique selon la carte
 const backgroundImage = new Image();
 if (location.pathname.includes("ville.html")) {
   backgroundImage.src = "assets/new york city.png";
+} else if (location.pathname.includes("forest.html")) {
+  backgroundImage.src = "assets/plage.png";
 }
 
-// 🎮 Initialisation du canvas
 const canvas = document.getElementById("hexCanvas");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// 🛠️ Grille hexagonale
 const hexSize = 32;
 const totalCols = 200;
 const totalRows = 200;
 let offsetX = 0;
 let offsetY = 0;
 
-// 📦 Clé de sauvegarde selon la page active
 const pageName = location.pathname.split("/").pop().replace(".html", "");
 const STORAGE_KEY = "characters-" + pageName;
 
-// 📍 Conversion grille → pixels
 function gridToPixel(col, row) {
   const x = hexSize * 1.5 * col - offsetX;
   const y = hexSize * Math.sqrt(3) * (row + 0.5 * (col % 2)) - offsetY;
   return { x, y };
 }
 
-// 🔷 Dessine hexagone + label
 function drawHex(x, y, label) {
   ctx.beginPath();
   for (let i = 0; i < 6; i++) {
@@ -45,11 +42,9 @@ function drawHex(x, y, label) {
   ctx.fillText(label, x, y + hexSize / 2);
 }
 
-// 🗺️ Dessine la carte + le fond mobile
 function drawMap() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 🏙️ Fond mobile si image chargée
   if (backgroundImage.complete) {
     const pattern = ctx.createPattern(backgroundImage, "repeat");
     ctx.save();
@@ -59,7 +54,6 @@ function drawMap() {
     ctx.restore();
   }
 
-  // 🧱 Hexagones
   for (let col = 0; col < totalCols; col++) {
     for (let row = 0; row < totalRows; row++) {
       const { x, y } = gridToPixel(col, row);
@@ -73,7 +67,6 @@ function drawMap() {
   }
 }
 
-// 🔁 Rafraîchit carte + personnages
 function refresh() {
   drawMap();
   restoreCharacters();
@@ -90,7 +83,6 @@ window.addEventListener("keydown", (e) => {
 
 refresh();
 
-// 💾 Sauvegarde des personnages
 function saveCharacters() {
   const characters = Array.from(document.querySelectorAll(".character")).map(c => ({
     src: c.dataset.src,
@@ -100,7 +92,6 @@ function saveCharacters() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
 }
 
-// 🔄 Repositionne tous les personnages
 function restoreCharacters() {
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   document.querySelectorAll(".character").forEach(c => c.remove());
@@ -134,7 +125,6 @@ function restoreCharacters() {
   });
 }
 
-// 👥 Ajoute les personnages cochés
 document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
   checkbox.addEventListener("change", (e) => {
     const src = e.target.value;
