@@ -33,21 +33,27 @@ for (let col = 0; col < cols; col++) {
   }
 }
 
-// 👤 Personnage déplaçable
-const character = document.getElementById("character");
-character.style.position = "absolute";
-character.style.left = "100px";
-character.style.top = "100px";
+// 👥 Gestion des personnages sélectionnés
+document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
+  checkbox.addEventListener("change", (e) => {
+    const src = e.target.value;
 
-character.addEventListener("dragend", (e) => {
-  character.style.left = `${e.pageX - 30}px`;
-  character.style.top = `${e.pageY - 30}px`;
-});
+    if (e.target.checked) {
+      const img = document.createElement("img");
+      img.src = src;
+      img.className = "character";
+      img.draggable = true;
+      img.style.left = "100px";
+      img.style.top = "100px";
+      document.body.appendChild(img);
 
-// 🎮 Changement de personnage
-const select = document.getElementById("characterSelect");
-select.addEventListener("change", () => {
-  character.src = select.value;
-  character.style.left = "100px";
-  character.style.top = "100px";
+      img.addEventListener("dragend", (ev) => {
+        img.style.left = `${ev.pageX - 30}px`;
+        img.style.top = `${ev.pageY - 30}px`;
+      });
+
+    } else {
+      document.querySelectorAll(`img[src='${src}']`).forEach(img => img.remove());
+    }
+  });
 });
