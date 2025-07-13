@@ -10,8 +10,8 @@ const totalRows = 200;
 let offsetX = 0;
 let offsetY = 0;
 
-// 🧱 Génération de la carte étendue
-function drawHex(x, y) {
+// 🧩 Dessiner un hexagone
+function drawHex(x, y, label) {
   ctx.beginPath();
   for (let i = 0; i < 6; i++) {
     const angle = (Math.PI / 3) * i;
@@ -22,14 +22,22 @@ function drawHex(x, y) {
   ctx.closePath();
   ctx.strokeStyle = "#ccc";
   ctx.stroke();
+
+  // 🔤 Ajouter la coordonnée (ex: A-1)
+  ctx.fillStyle = "#999";
+  ctx.font = "10px sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(label, x, y + 4);
 }
 
+// 📦 Conversion coordonnées grille → pixel
 function gridToPixel(col, row) {
   const x = hexSize * 1.5 * col - offsetX;
   const y = hexSize * Math.sqrt(3) * (row + 0.5 * (col % 2)) - offsetY;
   return { x, y };
 }
 
+// 🎮 Afficher toute la carte visible
 function drawMap() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let col = 0; col < totalCols; col++) {
@@ -37,7 +45,9 @@ function drawMap() {
       const { x, y } = gridToPixel(col, row);
       if (x > -hexSize && x < canvas.width + hexSize &&
           y > -hexSize && y < canvas.height + hexSize) {
-        drawHex(x, y);
+        const colLetter = String.fromCharCode(65 + col); // 65 = A
+        const label = `${colLetter}-${row + 1}`;
+        drawHex(x, y, label);
       }
     }
   }
@@ -45,7 +55,7 @@ function drawMap() {
 
 drawMap();
 
-// 🕹️ Déplacement dans la grande carte avec flèches
+// 🕹️ Déplacement avec flèches
 window.addEventListener("keydown", (e) => {
   const scrollAmount = 80;
   if (e.key === "ArrowUp") offsetY -= scrollAmount;
@@ -53,10 +63,10 @@ window.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") offsetX -= scrollAmount;
   if (e.key === "ArrowRight") offsetX += scrollAmount;
   drawMap();
-  restoreCharacters(); // repositionne les persos au bon endroit
+  restoreCharacters(); // repositionne les persos
 });
 
-// 📦 Sauvegarde dans localStorage après déplacement
+// 💾 Sauvegarder les positions
 function saveCharacters() {
   const characters = Array.from(document.querySelectorAll(".character")).map(c => ({
     src: c.src,
@@ -66,39 +76,10 @@ function saveCharacters() {
   localStorage.setItem("characters", JSON.stringify(characters));
 }
 
-// 👥 Gestion des personnages sélectionnés
-document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
-  checkbox.addEventListener("change", (e) => {
-    const src = e.target.value;
-
-    if (e.target.checked) {
-      const img = document.createElement("img");
-      img.src = src;
-      img.className = "character";
-      img.draggable = true;
-      img.style.left = "100px";
-      img.style.top = "100px";
-      document.body.appendChild(img);
-
-      img.addEventListener("dragend", (ev) => {
-        img.style.left = `${ev.pageX - 30}px`;
-        img.style.top = `${ev.pageY - 30}px`;
-        saveCharacters();
-      });
-
-      saveCharacters();
-
-    } else {
-      document.querySelectorAll(`img[src='${src}']`).forEach(img => img.remove());
-      saveCharacters();
-    }
-  });
-});
-
-// 🔁 Réaffichage des personnages mémorisés
+// 🔁 Recharger les positions
 function restoreCharacters() {
   const saved = JSON.parse(localStorage.getItem("characters") || "[]");
-  document.querySelectorAll(".character").forEach(c => c.remove()); // nettoyage
+  document.querySelectorAll(".character").forEach(c => c.remove());
   saved.forEach(data => {
     const img = document.createElement("img");
     img.src = data.src;
@@ -107,7 +88,6 @@ function restoreCharacters() {
     img.style.left = data.left;
     img.style.top = data.top;
     document.body.appendChild(img);
-
     img.addEventListener("dragend", (ev) => {
       img.style.left = `${ev.pageX - 30}px`;
       img.style.top = `${ev.pageY - 30}px`;
@@ -116,4 +96,29 @@ function restoreCharacters() {
   });
 }
 
-restoreCharacters(); // au chargement
+restoreCharacters();
+
+// 👥 Ajouter les personnages cochés
+document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
+  checkbox.addEventListener("change", (e) => {
+    const src = e.target.value;
+    if (e.target.checked) {
+      const img = document.createElement("img");
+      img.src = src;
+      img.className = "character";
+      img.draggable = true;
+      img.style.left = "100px";
+      img.style.top = "100px";
+      document.body.appendChild(img);
+      img.addEventListener("dragend", (ev) => {
+        img.style.left = `${ev.pageX - 30}px`;
+        img.style.top = `${ev.pageY - 30}px`;
+        saveCharacters();
+      });
+      saveCharacters();
+    } else {
+      document.querySelectorAll(`img[src='${src}']`).forEach(img => img.remove());
+      saveCharacters();
+    }
+  });
+});
