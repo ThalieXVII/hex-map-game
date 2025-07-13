@@ -4,18 +4,18 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// 🔧 Paramètres de la carte
+// 🛠️ Paramètres de la grille
 const hexSize = 40;
 const totalCols = 200;
 const totalRows = 200;
 let offsetX = 0;
 let offsetY = 0;
 
-// 🏷️ Identifie le nom de la page (ville, forest, index)
+// 📦 Identifiant unique pour chaque carte
 const pageName = location.pathname.split("/").pop().replace(".html", "");
 const STORAGE_KEY = "characters-" + pageName;
 
-// 📍 Convertit les coordonnées (col, row) en position pixel à l'écran
+// 🔁 Convertit case hexagonale → position pixel à l'écran
 function gridToPixel(col, row) {
   const x = hexSize * 1.5 * col - offsetX;
   const y = hexSize * Math.sqrt(3) * (row + 0.5 * (col % 2)) - offsetY;
@@ -26,10 +26,8 @@ function gridToPixel(col, row) {
 function drawHex(x, y, label) {
   ctx.beginPath();
   for (let i = 0; i < 6; i++) {
-    const angle = (Math.PI / 3) * i;
-    const dx = x + hexSize * Math.cos(angle);
-    const dy = y + hexSize * Math.sin(angle);
-    ctx.lineTo(dx, dy);
+    const angle = Math.PI / 3 * i;
+    ctx.lineTo(x + hexSize * Math.cos(angle), y + hexSize * Math.sin(angle));
   }
   ctx.closePath();
   ctx.strokeStyle = "#ccc";
@@ -41,7 +39,7 @@ function drawHex(x, y, label) {
   ctx.fillText(label, x, y + hexSize / 2);
 }
 
-// 🗺️ Dessine la portion visible de la carte
+// 🗺️ Dessine la carte visible
 function drawMap() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let col = 0; col < totalCols; col++) {
@@ -57,7 +55,7 @@ function drawMap() {
   }
 }
 
-// 🔁 Redessine la carte + repositionne les personnages
+// 🔁 Rafraîchit carte + personnages à bonne position
 function refresh() {
   drawMap();
   restoreCharacters();
@@ -65,7 +63,7 @@ function refresh() {
 
 refresh();
 
-// ⌨️ Déplacement avec les flèches du clavier
+// ⌨️ Flèches du clavier pour faire défiler la carte
 window.addEventListener("keydown", (e) => {
   const scrollAmount = 80;
   if (e.key === "ArrowUp") offsetY -= scrollAmount;
@@ -75,7 +73,7 @@ window.addEventListener("keydown", (e) => {
   refresh();
 });
 
-// 💾 Sauvegarde des personnages dans localStorage
+// 💾 Sauvegarde des personnages (col, row, src)
 function saveCharacters() {
   const characters = Array.from(document.querySelectorAll(".character")).map(c => ({
     src: c.dataset.src,
@@ -85,7 +83,7 @@ function saveCharacters() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
 }
 
-// 🔄 Recharge les personnages à leur position logique
+// 🔄 Repositionne les personnages selon leurs coordonnées
 function restoreCharacters() {
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   document.querySelectorAll(".character").forEach(c => c.remove());
@@ -119,7 +117,7 @@ function restoreCharacters() {
   });
 }
 
-// ✅ Ajoute les personnages quand ils sont cochés
+// 👥 Ajoute un personnage quand on le coche
 document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
   checkbox.addEventListener("change", (e) => {
     const src = e.target.value;
@@ -159,4 +157,3 @@ document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
     }
   });
 });
-
