@@ -4,8 +4,11 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const hexSize = 40;
-const cols = 10;
-const rows = 10;
+const totalCols = 200;
+const totalRows = 200;
+
+let offsetX = 0;
+let offsetY = 0;
 
 function drawHex(x, y) {
   ctx.beginPath();
@@ -21,39 +24,33 @@ function drawHex(x, y) {
 }
 
 function gridToPixel(col, row) {
-  const x = hexSize * 1.5 * col;
-  const y = hexSize * Math.sqrt(3) * (row + 0.5 * (col % 2));
+  const x = hexSize * 1.5 * col - offsetX;
+  const y = hexSize * Math.sqrt(3) * (row + 0.5 * (col % 2)) - offsetY;
   return { x, y };
 }
 
-for (let col = 0; col < cols; col++) {
-  for (let row = 0; row < rows; row++) {
-    const { x, y } = gridToPixel(col, row);
-    drawHex(x, y);
+function drawMap() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let col = 0; col < totalCols; col++) {
+    for (let row = 0; row < totalRows; row++) {
+      const { x, y } = gridToPixel(col, row);
+      // Ne dessine que ce qui est visible
+      if (x > -hexSize && x < canvas.width + hexSize &&
+          y > -hexSize && y < canvas.height + hexSize) {
+        drawHex(x, y);
+      }
+    }
   }
 }
 
-// 👥 Gestion des personnages sélectionnés
-document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
-  checkbox.addEventListener("change", (e) => {
-    const src = e.target.value;
+drawMap();
 
-    if (e.target.checked) {
-      const img = document.createElement("img");
-      img.src = src;
-      img.className = "character";
-      img.draggable = true;
-      img.style.left = "100px";
-      img.style.top = "100px";
-      document.body.appendChild(img);
-
-      img.addEventListener("dragend", (ev) => {
-        img.style.left = `${ev.pageX - 30}px`;
-        img.style.top = `${ev.pageY - 30}px`;
-      });
-
-    } else {
-      document.querySelectorAll(`img[src='${src}']`).forEach(img => img.remove());
-    }
-  });
+window.addEventListener("keydown", (e) => {
+  const scrollAmount = 80;
+  if (e.key === "ArrowUp") offsetY -= scrollAmount;
+  if (e.key === "ArrowDown") offsetY += scrollAmount;
+  if (e.key === "ArrowLeft") offsetX -= scrollAmount;
+  if (e.key === "ArrowRight") offsetX += scrollAmount;
+  drawMap();
 });
+
