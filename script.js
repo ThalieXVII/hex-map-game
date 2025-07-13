@@ -10,34 +10,33 @@ const totalRows = 200;
 let offsetX = 0;
 let offsetY = 0;
 
-// 🔷 Dessiner un hexagone avec son étiquette
+// 📍 Détermine la carte actuelle selon l'URL
+const pageName = location.pathname.split("/").pop().replace(".html", "");
+const STORAGE_KEY = "characters-" + pageName;
+
 function drawHex(x, y, label) {
   ctx.beginPath();
   for (let i = 0; i < 6; i++) {
     const angle = (Math.PI / 3) * i;
-    const dx = x + hexSize * Math.cos(angle);
-    const dy = y + hexSize * Math.sin(angle);
-    ctx.lineTo(dx, dy);
+    ctx.lineTo(x + hexSize * Math.cos(angle), y + hexSize * Math.sin(angle));
   }
   ctx.closePath();
   ctx.strokeStyle = "#ccc";
   ctx.stroke();
 
-  // 🔤 Texte discret en bas de chaque case
+  // 🏷️ Coordonnée visible
   ctx.font = "8px sans-serif";
   ctx.fillStyle = "#999";
   ctx.textAlign = "center";
   ctx.fillText(label, x, y + hexSize / 2);
 }
 
-// 🔁 Conversion grille → position pixel
 function gridToPixel(col, row) {
   const x = hexSize * 1.5 * col - offsetX;
   const y = hexSize * Math.sqrt(3) * (row + 0.5 * (col % 2)) - offsetY;
   return { x, y };
 }
 
-// 🗺️ Dessine toute la portion visible de la carte
 function drawMap() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let col = 0; col < totalCols; col++) {
@@ -45,7 +44,7 @@ function drawMap() {
       const { x, y } = gridToPixel(col, row);
       if (x > -hexSize && x < canvas.width + hexSize &&
           y > -hexSize && y < canvas.height + hexSize) {
-        const colLetter = String.fromCharCode(65 + (col % 26)); // A-Z cyclique
+        const colLetter = String.fromCharCode(65 + (col % 26));
         const label = `${colLetter}-${row + 1}`;
         drawHex(x, y, label);
       }
@@ -55,7 +54,6 @@ function drawMap() {
 
 drawMap();
 
-// 🕹️ Flèches du clavier pour se déplacer dans la carte
 window.addEventListener("keydown", (e) => {
   const scrollAmount = 80;
   if (e.key === "ArrowUp") offsetY -= scrollAmount;
@@ -66,19 +64,17 @@ window.addEventListener("keydown", (e) => {
   restoreCharacters();
 });
 
-// 💾 Sauvegarde dans le navigateur (localStorage)
 function saveCharacters() {
   const characters = Array.from(document.querySelectorAll(".character")).map(c => ({
     src: c.src,
     left: c.style.left,
     top: c.style.top
   }));
-  localStorage.setItem("characters", JSON.stringify(characters));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
 }
 
-// 🔄 Recharge les personnages sauvegardés
 function restoreCharacters() {
-  const saved = JSON.parse(localStorage.getItem("characters") || "[]");
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   document.querySelectorAll(".character").forEach(c => c.remove());
   saved.forEach(data => {
     const img = document.createElement("img");
@@ -98,7 +94,6 @@ function restoreCharacters() {
 
 restoreCharacters();
 
-// 👥 Ajout de personnages depuis les cases cochées
 document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
   checkbox.addEventListener("change", (e) => {
     const src = e.target.value;
