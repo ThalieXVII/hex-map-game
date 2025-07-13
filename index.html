@@ -7,33 +7,32 @@
   <style>
     body {
       margin: 0;
-      background-color: #202020;
+      background-color: #1c1c1c;
     }
   </style>
 </head>
 <body>
 
-  <!-- 🗺️ Menu de navigation entre cartes -->
-  <select onchange="location.href=this.value">
-    <option value="index.html">Carte principale</option>
-    <option value="forest.html">Forêt</option>
-    <option value="ville.html">Ville</option>
-  </select>
+  <!-- 🗺️ Boutons de navigation -->
+  <div class="nav">
+    <button onclick="location.href='index.html'">Carte principale</button>
+    <button onclick="location.href='forest.html'">Forêt</button>
+    <button onclick="location.href='ville.html'">Ville</button>
+  </div>
 
-  <!-- 🎭 Menu de sélection de personnage -->
-  <select id="characterSelect">
-    <option value="assets/Zartan copie.png">Zartan</option>
-    <option value="assets/Zarana.png">Zarana</option>
-    <option value="assets/Zandar.png">Zandar</option>
-    <option value="assets/RoadPig.png">Road Pig</option>
-    <option value="assets/Trasher.png">Trasher</option>
-    <option value="assets/Zanya.png">Zanya</option>
-    <option value="assets/zanzibar2 copie.png">Zanzibar</option>
-  </select>
+  <!-- 👥 Choix des personnages -->
+  <div class="persos">
+    <label><input type="checkbox" value="assets/Zartan copie.png"> Zartan</label>
+    <label><input type="checkbox" value="assets/Zarana.png"> Zarana</label>
+    <label><input type="checkbox" value="assets/Zandar.png"> Zandar</label>
+    <label><input type="checkbox" value="assets/RoadPig.png"> Road Pig</label>
+    <label><input type="checkbox" value="assets/Trasher.png"> Trasher</label>
+    <label><input type="checkbox" value="assets/Zanya.png"> Zanya</label>
+    <label><input type="checkbox" value="assets/zanzibar2 copie.png"> Zanzibar</label>
+  </div>
 
-  <!-- 🎮 Zone de jeu -->
   <canvas id="hexCanvas"></canvas>
-  <img id="character" src="assets/Zartan copie.png" draggable="true">
+
   <script src="script.js"></script>
 
 </body>
