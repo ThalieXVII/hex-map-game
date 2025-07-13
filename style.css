@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  background-color: #202020;
+}
+canvas {
+  display: block;
+}
+#character {
+  position: absolute;
+  width: 60px;
+  cursor: grab;
+}
