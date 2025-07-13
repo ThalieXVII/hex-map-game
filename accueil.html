@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Bienvenue dans le jeu Hex-Map</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 80px;
+    }
+    h1 {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 40px;
+    }
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .menu button {
+      font-size: 18px;
+      padding: 12px 20px;
+      background-color: #444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .menu button:hover {
+      background-color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>👾 Bienvenue dans Hex-Map 👾</h1>
+  <p>Choisis ta carte pour commencer l'aventure :</p>
+
+  <div class="menu">
+    <button onclick="location.href='index.html'">Carte Principale</button>
+    <button onclick="location.href='forest.html'">Forêt</button>
+    <button onclick="location.href='ville.html'">Ville</button>
+  </div>
+
+</body>
+</html>
