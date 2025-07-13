@@ -15,33 +15,31 @@
 </head>
 <body>
 
+  <!-- 🗺️ Navigation -->
   <div class="nav">
     <button onclick="location.href='index.html'">Carte principale</button>
     <button onclick="location.href='forest.html'">Forêt</button>
     <button onclick="location.href='ville.html'">Ville</button>
   </div>
 
+  <!-- 👥 Choix des personnages -->
   <div class="persos">
     <label><input type="checkbox" value="assets/Zartan copie.png"> Zartan</label>
     <label><input type="checkbox" value="assets/Zarana.png"> Zarana</label>
     <label><input type="checkbox" value="assets/Zandar.png"> Zandar</label>
-    <label><input type="checkbox" value="assets/RoadPig.png"> Road Pig</label>
-    <label><input type="checkbox" value="assets/Trasher.png"> Trasher</label>
-    <label><input type="checkbox" value="assets/Zanya.png"> Zanya</label>
-    <label><input type="checkbox" value="assets/zanzibar2 copie.png"> Zanzibar</label>
   </div>
 
-  <!-- 🛠️ Boutons de gestion des personnages -->
-<div style="position: absolute; top: 140px; left: 10px; z-index: 20;">
-  <button onclick="saveCharacters()">💾 Sauver la carte</button>
-  <button onclick="restoreCharacters()">🔄 Charger la dernière position</button>
-  <button onclick="localStorage.removeItem('characters'); location.reload();">🗑️ Réinitialiser</button>
-</div>
+  <!-- 🛠️ Boutons de gestion -->
+  <div style="position:absolute; top:140px; left:10px; z-index:20;">
+    <button onclick="saveCharacters()">💾 Sauver la carte</button>
+    <button onclick="restoreCharacters()">🔄 Charger la dernière position</button>
+    <button onclick="localStorage.removeItem('characters'); location.reload();">🗑️ Réinitialiser</button>
+  </div>
 
   <canvas id="hexCanvas"></canvas>
-
   <script src="script.js"></script>
 
 </body>
 </html>
+
 
